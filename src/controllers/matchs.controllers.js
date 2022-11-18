@@ -3,10 +3,15 @@ import Match from '../models/matchs.models'
 
 export const getAllMatchs = async (req, res, next) => {
   try {
-    const matchs = await Match.find().populate('teams', {
+    const matchs = await Match.find({}, {
+      createdAt: 0,
+      updatedAt: 0
+    }).populate('teams', {
       _id: 1,
       country: 1,
-      img: 1
+      img: 1,
+      points: 1,
+      status: 1
     })
 
     if (matchs.length <= 0) {
@@ -22,7 +27,14 @@ export const getAllMatchs = async (req, res, next) => {
 export const getMatchById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const match = await Match.findById(id)
+    const match = await Match.findById(id, {
+      updatedAt: 0,
+      createdAt: 0
+    }).populate('teams', {
+      _id: 1,
+      country: 1,
+      img: 1
+    })
 
     if (match.length <= 0) {
       return responseHandler(res, 404, true, 'Match no found', null)

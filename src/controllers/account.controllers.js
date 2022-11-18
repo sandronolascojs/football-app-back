@@ -1,6 +1,6 @@
 import { verifyJWT } from '../helpers/jwt.helpers'
 import { responseHandler } from '../middlewares/responseHandler.middlewares'
-import { User } from '../models/users.models'
+import User from '../models/users.models'
 
 export const verifyEmail = async (req, res, next) => {
   try {
@@ -12,12 +12,12 @@ export const verifyEmail = async (req, res, next) => {
     }
     const user = decoded
 
-    const verifyUser = await User.update({ isVerified: true }, { where: { id: user.id } })
+    const verifyUser = await User.findByIdAndUpdate(user.id, { isVerified: true })
     if (!verifyUser) {
       return responseHandler(res, 404, true, 'User not found', null)
     }
 
-    return responseHandler(res, 204, false, 'User verified', null)
+    return responseHandler(res, 200, false, 'User verified', null)
   } catch (err) {
     next(err)
   }

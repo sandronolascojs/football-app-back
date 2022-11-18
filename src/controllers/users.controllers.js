@@ -21,7 +21,11 @@ export const getAllUsers = async (req, res, next) => {
 export const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const searchUser = await User.findbyId(id)
+    const searchUser = await User.findbyId(id, {
+      password: 0,
+      createdAt: 0,
+      updatedAt: 0
+    })
 
     if (!searchUser) {
       return responseHandler(res, 404, true, 'User not found', null)

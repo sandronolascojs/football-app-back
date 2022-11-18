@@ -1,6 +1,5 @@
 import Teams from '../models/teams.models'
 import { responseHandler } from '../middlewares/responseHandler.middlewares'
-import User from '../models/users.models'
 import Group from '../models/groups.models'
 
 export const getAllTeams = async (req, res, next) => {
@@ -34,14 +33,6 @@ export const getTeamById = async (req, res, next) => {
 
 export const createTeam = async (req, res, next) => {
   try {
-    const { user } = req
-
-    const foundUser = await User.findById(user.id)
-
-    if (foundUser.role !== 'admin') {
-      return responseHandler(res, 401, true, 'Unauthorized', null)
-    }
-
     const { country, img, groupId } = req.body
 
     const searchTeam = await Teams.findOne({ country })
@@ -71,24 +62,24 @@ export const createTeam = async (req, res, next) => {
   }
 }
 
-export const removeTeam = async (req, res, next) => {
+export const deleteTeam = async (req, res, next) => {
   try {
-    const { id } = req.body
+    const { id } = req.params
 
-    const team = Teams.findByPk(id)
+    const team = await Teams.findById(id)
 
     if (team <= 0) {
       return responseHandler(res, 404, true, 'Team no found', null)
     }
 
-    await Teams.destroy(id)
+    await Teams.findByIdAndDelete(id)
     return responseHandler(res, 200, false, 'Team removed', null)
   } catch (err) {
     next(err)
   }
 }
 
-export const teamEdit = async (req, res, next) => {
+export const updateTeam = async (req, res, next) => {
   try {
     const { id } = req.params
     const { country, groupId, img } = req.body

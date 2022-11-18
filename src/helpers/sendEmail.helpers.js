@@ -12,12 +12,10 @@ export const sendEmail = async (email, subject, html) => {
     }
   })
 
-  const info = await transporter.sendMail({
+  await transporter.sendMail({
     from: `"Football App Bizztrato" <${NODEMAILER.username}>`,
     to: email,
     subject,
     html
   })
-
-  console.log('Message sent: %s', info.messageId)
 }
